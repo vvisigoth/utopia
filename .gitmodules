@@ -1,0 +1,6 @@
+[submodule "vim"]
+	path = vim
+	url = git@github.com:vim/vim.git
+[submodule "dotfiles"]
+	path = dotfiles
+	url = git@github.com:vvisigoth/dotfiles.git
