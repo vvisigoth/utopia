@@ -4,11 +4,17 @@ RUN apt-get update -y
 RUN apt-get install -y git
 RUN apt-get install -y python2.7
 RUN apt-get install -y build-essential
+RUN apt-get install -y libssl-dev
+RUN apt-get install -y nodejs
+RUN apt-get install -y npm
+
+#Node needs symlinks
+RUN ln -s /usr/bin/nodejs /usr/bin/node
 
 # Setup home environment
 RUN useradd dev
 RUN mkdir /home/dev && chown -R dev: /home/dev
-RUN mkdir -p /home/dev/dotfiles /home/dev/bin /home/dev/lib /home/dev/include
+RUN mkdir -p /home/dev/bin /home/dev/lib /home/dev/include
 ENV PATH /home/dev/bin:$PATH
 ENV PKG_CONFIG_PATH /home/dev/lib/pkgconfig
 ENV LD_LIBRARY_PATH /home/dev/lib
@@ -35,11 +41,11 @@ RUN mv /usr/include/lua5.1/*.h /usr/include/lua5.1/include/
 #We assume that vim has been pulled from git and is a subdirectory here
 
 RUN mkdir -p /home/dev/vim
-COPY vim /home/dev/vim
+ADD vim /home/dev/vim
 
 WORKDIR /home/dev/vim/src
-RUN rm auto/config.cache
-RUN make distclean
+#RUN rm auto/config.cache
+#RUN make distclean
 RUN ./configure --with-features=huge \
         --enable-rubyinterp \ 
         --enable-largefile \
@@ -69,12 +75,18 @@ WORKDIR /home/dev
 ENV HOME /home/dev
 
 #This is somewhat obviated by dotfiles?
-#ADD vimrc /home/dev/.vimrc
-#ADD vim /home/dev/.vim
-#ADD bash_profile /home/dev/.bash_profile
-#ADD gitconfig /home/dev/.gitconfig
+ADD dotfiles /home/dev/dotfiles
+RUN bash dotfiles/setup.sh
+RUN bash
 
 # Link in shared parts of the home directory
 RUN ln -s /var/shared/.ssh
 RUN ln -s /var/shared/.bash_history
+
+# Gitbook install
+RUN npm install gitbook-cli -g
+EXPOSE 4000
+
+
+
 
