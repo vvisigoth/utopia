@@ -84,7 +84,7 @@ RUN ln -s /var/shared/.ssh
 RUN ln -s /var/shared/.bash_history
 
 # Gitbook install
-RUN npm install gitbook-cli -g
+RUN npm install -g gitbook-cli
 EXPOSE 4000
 
 
