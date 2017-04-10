@@ -87,6 +87,8 @@ RUN ln -s /var/shared/.bash_history
 RUN npm install -g gitbook-cli
 EXPOSE 4000
 
-
-
+#urbit installation needs a script to catch errors
+RUN apt-get install -y curl
+ADD install_urbit.sh /home/dev/install_urbit.sh
+RUN bash install_urbit.sh
 
